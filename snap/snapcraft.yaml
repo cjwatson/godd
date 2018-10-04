@@ -17,4 +17,19 @@ parts:
     plugin: go
     source: https://github.com/mvo5/godd
     source-type: git
-    build-packages: [gcc, libgudev-1.0-dev]
+    go-importpath: github.com/mvo5/godd
+    stage-packages: [libgudev-1.0-dev]
+    override-build: |
+      # the horror the horror
+      sudo mv /usr/bin/go /usr/bin/go.system
+      sudo ln -s /snap/bin/go /usr/bin/go
+      snapcraftctl build
+      sudo rm /usr/bin/go
+      sudo mv /usr/bin/go.system /usr/bin/go
+    build-snaps:
+      - go
+    prime:
+     - usr/lib/*/libgudev-1.0.so*
+     - usr/lib/*/libobject-2.0.so*
+     - usr/lib/*/libglib-2.0.so*
+     - bin/godd*
